@@ -1,4 +1,4 @@
-package ru.sumin.a2dolist.ui.theme
+package ru.sumin.a2dolist.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
