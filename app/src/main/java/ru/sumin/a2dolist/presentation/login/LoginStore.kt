@@ -6,9 +6,13 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
+import ru.sumin.a2dolist.domain.usecase.CheckAuthStatusUseCase
+import ru.sumin.a2dolist.domain.usecase.LoginUserUseCase
+import ru.sumin.a2dolist.domain.usecase.RegisterUserUseCase
 import ru.sumin.a2dolist.presentation.login.LoginStore.Intent
 import ru.sumin.a2dolist.presentation.login.LoginStore.Label
 import ru.sumin.a2dolist.presentation.login.LoginStore.State
+import javax.inject.Inject
 
 enum class LoginTab { SIGN_UP, REGISTER }
 
@@ -40,16 +44,19 @@ interface LoginStore : Store<Intent, State, Label> {
     }
 }
 
-internal class LoginStoreFactory(
-    private val storeFactory: StoreFactory
+internal class LoginStoreFactory @Inject constructor(
+    private val storeFactory: StoreFactory,
+    private val loginUserUseCase: LoginUserUseCase,
+    private val registerUserUseCase: RegisterUserUseCase,
+    private val checkAuthStatusUseCase: CheckAuthStatusUseCase
 ) {
 
     fun create(): LoginStore =
         object : LoginStore, Store<Intent, State, Label> by storeFactory.create(
             name = "LoginStore",
             initialState = State(),
-            bootstrapper = BootstrapperImpl(),
-            executorFactory = ::ExecutorImpl,
+            bootstrapper = BootstrapperImpl(checkAuthStatusUseCase),
+            executorFactory = { ExecutorImpl(loginUserUseCase, registerUserUseCase) },
             reducer = ReducerImpl
         ) {}
 
@@ -67,18 +74,22 @@ internal class LoginStoreFactory(
         data object AuthSuccess : Msg
     }
 
-    private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
+    private class BootstrapperImpl(
+        private val checkAuthStatusUseCase: CheckAuthStatusUseCase
+    ) : CoroutineBootstrapper<Action>() {
         override fun invoke() {
             scope.launch {
-                val isLoggedIn = false
-                if (isLoggedIn) {
+                if (checkAuthStatusUseCase()) {
                     dispatch(Action.UserAlreadyLoggedIn)
                 }
             }
         }
     }
 
-    private class ExecutorImpl : CoroutineExecutor<Intent, Action, State, Msg, Label>() {
+    private class ExecutorImpl(
+        private val loginUserUseCase: LoginUserUseCase,
+        private val registerUserUseCase: RegisterUserUseCase
+    ) : CoroutineExecutor<Intent, Action, State, Msg, Label>() {
         override fun executeIntent(intent: Intent, getState: () -> State) {
             // Блокируем новые действия, пока идет загрузка
             if (intent is Intent.SubmitClicked && getState().isLoading) {
@@ -110,41 +121,26 @@ internal class LoginStoreFactory(
 
         private fun handleLogin(email: String, pass: String) {
             scope.launch {
-                try {
-                    kotlinx.coroutines.delay(1000)
-                    if (email == "test@test.com" && pass == "123456") {
-                        dispatch(Msg.AuthSuccess)
-                        publish(Label.LoginSuccess)
-                    } else {
-                        dispatch(Msg.ErrorOccurred("Incorrect email or password"))
-                    }
-                } catch (e: Exception) {
-                    dispatch(Msg.ErrorOccurred(e.message ?: "Login failed"))
+                val result = loginUserUseCase(email, pass)
+
+                if (result.isSuccess) {
+                    dispatch(Msg.AuthSuccess)
+                    publish(Label.LoginSuccess)
+                } else {
+                    dispatch(Msg.ErrorOccurred(result.exceptionOrNull()?.message ?: "Login failed"))
                 }
             }
         }
 
         private fun handleRegistration(email: String, pass: String, confirmPass: String) {
-            if (pass.length < 8) {
-                dispatch(Msg.ErrorOccurred("Password must be at least 8 characters"))
-                return
-            }
-            if (pass != confirmPass) {
-                dispatch(Msg.ErrorOccurred("Passwords don't match"))
-                return
-            }
-
             scope.launch {
-                try {
-                    kotlinx.coroutines.delay(1000)
-                    if (email == "test@test.com") {
-                        dispatch(Msg.ErrorOccurred("This email is already taken"))
-                    } else {
-                        dispatch(Msg.AuthSuccess)
-                        publish(Label.RegistrationSuccess)
-                    }
-                } catch (e: Exception) {
-                    dispatch(Msg.ErrorOccurred(e.message ?: "Registration failed"))
+                val result = registerUserUseCase(email, pass, confirmPass)
+
+                if (result.isSuccess) {
+                    dispatch(Msg.AuthSuccess)
+                    publish(Label.RegistrationSuccess)
+                } else {
+                    dispatch(Msg.ErrorOccurred(result.exceptionOrNull()?.message ?: "Registration failed"))
                 }
             }
         }
