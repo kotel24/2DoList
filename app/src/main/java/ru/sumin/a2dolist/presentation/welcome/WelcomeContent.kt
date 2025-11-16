@@ -32,7 +32,9 @@ import ru.sumin.a2dolist.presentation.ui.theme.MainBlue
 
 
 @Composable
-fun WelcomeScreen() {
+fun WelcomeContent(
+    onClickGo: () -> Unit
+){
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = LightBackgroundColor // Основной светлый фон
@@ -82,7 +84,7 @@ fun WelcomeScreen() {
 
             // Кнопка "Let's Go"
             Button(
-                onClick = { /* TODO: Обработка нажатия */ },
+                onClick = onClickGo,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(64.dp)
@@ -141,6 +143,8 @@ fun BackgroundShapes(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun WelcomeScreenPreview() {
-    WelcomeScreen()
+fun WelcomeContentPreview() {
+    WelcomeContent(
+        onClickGo = {}
+    )
 }
