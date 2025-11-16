@@ -44,7 +44,7 @@ interface LoginStore : Store<Intent, State, Label> {
     }
 }
 
-internal class LoginStoreFactory @Inject constructor(
+class LoginStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val loginUserUseCase: LoginUserUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
