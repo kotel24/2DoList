@@ -36,6 +36,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,7 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.sumin.a2dolist.R // Убедитесь, что R указывает на ваш проект
+import ru.sumin.a2dolist.R
 import ru.sumin.a2dolist.presentation.ui.theme.ErrorBackground
 import ru.sumin.a2dolist.presentation.ui.theme.ErrorRed
 import ru.sumin.a2dolist.presentation.ui.theme.InputFieldBackgroundColor
@@ -66,9 +67,25 @@ import ru.sumin.a2dolist.presentation.ui.theme.MainBlue
 import ru.sumin.a2dolist.presentation.ui.theme.SelectedTabLightBlue
 import ru.sumin.a2dolist.presentation.ui.theme.TextGrey
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginContent(
+    component: LoginComponent
+){
+    val state by component.model.collectAsState()
+    LoginScreen(
+        state = state,
+        onEmailChange = component::onEmailChanged,
+        onPasswordChange = component::onPasswordChanged,
+        onConfirmPasswordChange = component::onConfirmPasswordChanged,
+        onTabSelected = component::onTabSelected,
+        onSubmit = component::onSubmitClicked,
+        onForgotPasswordClicked = component::onForgotPasswordClicked
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LoginScreen(
     state: LoginStore.State,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
@@ -88,7 +105,7 @@ fun LoginContent(
                 .fillMaxSize()
                 .padding(horizontal = 24.dp)
         ) {
-            Spacer(modifier = Modifier.height(180.dp)) // Убран IconButton
+            Spacer(modifier = Modifier.height(180.dp))
 
             // Заголовок "2DoList"
             Text(
@@ -104,8 +121,8 @@ fun LoginContent(
 
             // Переключатель Sign Up / Register
             SignUpRegisterToggle(
-                selectedTab = state.selectedTab, // Управляется состоянием
-                onTabSelected = onTabSelected // Отправляет событие
+                selectedTab = state.selectedTab,
+                onTabSelected = onTabSelected
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -153,8 +170,8 @@ fun LoginContent(
 
             // Кнопка Sign In / Register
             Button(
-                onClick = onSubmit, // Отправляет общее событие "Submit"
-                enabled = !state.isLoading, // Блокируем, если идет загрузка
+                onClick = onSubmit,
+                enabled = !state.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(64.dp),
@@ -164,7 +181,6 @@ fun LoginContent(
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Text(
-                    // Текст кнопки меняется в зависимости от вкладки
                     text = if (state.selectedTab == LoginTab.SIGN_UP) "Sign In" else "Register",
                     color = Color.White,
                     fontSize = 20.sp,
@@ -176,7 +192,6 @@ fun LoginContent(
 
             // Другие варианты входа
             Text(
-                // Текст тоже меняется
                 text = if (state.selectedTab == LoginTab.SIGN_UP) "Other sign in options" else "Or Register with",
                 color = TextGrey,
                 fontSize = 14.sp,
@@ -308,7 +323,7 @@ private fun RegisterFields(
 
     // Определяем, какие поля подсвечивать
     val isPasswordMismatch = error?.contains("match", ignoreCase = true) == true
-    val isEmailError = error != null && !isPasswordMismatch // Ошибка email (например, "is already taken")
+    val isEmailError = error != null && !isPasswordMismatch
 
     // Поле Email
     Text(
@@ -428,18 +443,18 @@ private fun outlinedTextFieldErrorColors(isError: Boolean) = OutlinedTextFieldDe
 
 @Composable
 fun BackgroundShapes(modifier: Modifier = Modifier) {
-    val LightBlueShape = Color(0xFFC7E0FF).copy(alpha = 0.8f) // Цвет из вашего кода
+    val LightBlueShape = Color(0xFFC7E0FF).copy(alpha = 0.8f)
 
     Canvas(modifier = modifier) {
         drawCircle(
             color = LightBlueShape,
             radius = 150.dp.toPx(),
-            center = Offset(x = (80).dp.toPx(), y = (-20).dp.toPx()) // Сдвинем
+            center = Offset(x = (80).dp.toPx(), y = (-20).dp.toPx())
         )
         drawCircle(
             color = LightBlueShape,
             radius = 150.dp.toPx(),
-            center = Offset(x = (-20).dp.toPx(), y = (80).dp.toPx()) // Сдвинем его правее и ниже
+            center = Offset(x = (-20).dp.toPx(), y = (80).dp.toPx())
         )
         drawCircle(
             color = LightBlueShape,
@@ -541,7 +556,7 @@ fun SocialMediaButton(iconResId: Int) {
 @Preview(showBackground = true, name = "Sign In Tab (No Error)")
 @Composable
 fun LoginScreenSignInPreview() {
-    LoginContent(
+    LoginScreen(
         state = LoginStore.State(selectedTab = LoginTab.SIGN_UP),
         onEmailChange = {},
         onPasswordChange = {},
@@ -555,7 +570,7 @@ fun LoginScreenSignInPreview() {
 @Preview(showBackground = true, name = "Register Tab (No Error)")
 @Composable
 fun LoginScreenRegisterPreview() {
-    LoginContent(
+    LoginScreen(
         state = LoginStore.State(selectedTab = LoginTab.REGISTER),
         onEmailChange = {},
         onPasswordChange = {},
@@ -569,7 +584,7 @@ fun LoginScreenRegisterPreview() {
 @Preview(showBackground = true, name = "Sign In Tab (Error)")
 @Composable
 fun LoginScreenSignInErrorPreview() {
-    LoginContent(
+    LoginScreen(
         state = LoginStore.State(
             selectedTab = LoginTab.SIGN_UP,
             error = "Incorrect email or password"
@@ -586,7 +601,7 @@ fun LoginScreenSignInErrorPreview() {
 @Preview(showBackground = true, name = "Register Tab (Error)")
 @Composable
 fun LoginScreenRegisterErrorPreview() {
-    LoginContent(
+    LoginScreen(
         state = LoginStore.State(
             selectedTab = LoginTab.REGISTER,
             error = "Passwords don't match"
