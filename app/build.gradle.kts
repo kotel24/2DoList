@@ -68,9 +68,10 @@ dependencies {
     implementation(libs.room.core)
     ksp(libs.room.compiler)
 
-    //для работы с Dagger
-    implementation(libs.dagger.core)
-    ksp(libs.dagger.compiler)
+    // Koin
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
 
     //для работы с Glide
     implementation(libs.glide.compose)

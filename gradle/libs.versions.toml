@@ -15,7 +15,7 @@ decompose = "2.1.2"
 retrofit = "3.0.0"
 room = "2.7.2"
 ksp = "2.1.20-1.0.31"
-dagger = "2.55"
+koin = "4.1.1"
 parcelize = "2.1.21"
 
 [libraries]
@@ -25,8 +25,9 @@ glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "g
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 room-core = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-dagger-core = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
-dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
+koin-android = { group = "io.insert-koin", name = "koin-android" }
+koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose" }
 decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
 decompose-jetpac = { group = "com.arkivanov.decompose", name = "extensions-compose-jetpack", version.ref = "decompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
