@@ -1,8 +1,7 @@
 package ru.sumin.a2dolist.domain.usecase
 
-import javax.inject.Inject
 
-class ValidatePasswordUseCase @Inject constructor() {
+class ValidatePasswordUseCase() {
 
     operator fun invoke(password: String): Result<Unit> {
         if (password.length < 8) {

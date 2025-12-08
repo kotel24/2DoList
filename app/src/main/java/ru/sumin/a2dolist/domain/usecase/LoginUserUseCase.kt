@@ -1,10 +1,9 @@
 package ru.sumin.a2dolist.domain.usecase
 
-import ru.sumin.a2dolist.domain.repository.LoginRepository
-import javax.inject.Inject
+import ru.sumin.a2dolist.domain.repository.AuthRepository
 
-class LoginUserUseCase @Inject constructor(
-    private val repository: LoginRepository,
+class LoginUserUseCase(
+    private val repository: AuthRepository,
     private val validateEmailUseCase: ValidateEmailUseCase
 ) {
     suspend operator fun invoke(email: String, password: String): Result<Unit>{
