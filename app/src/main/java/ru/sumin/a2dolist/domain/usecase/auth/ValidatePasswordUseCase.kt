@@ -1,4 +1,4 @@
-package ru.sumin.a2dolist.domain.usecase
+package ru.sumin.a2dolist.domain.usecase.auth
 
 
 class ValidatePasswordUseCase() {

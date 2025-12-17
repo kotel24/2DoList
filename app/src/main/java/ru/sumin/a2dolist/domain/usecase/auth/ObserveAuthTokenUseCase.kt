@@ -1,4 +1,4 @@
-package ru.sumin.a2dolist.domain.usecase
+package ru.sumin.a2dolist.domain.usecase.auth
 
 import kotlinx.coroutines.flow.Flow
 import ru.sumin.a2dolist.domain.repository.AuthRepository
