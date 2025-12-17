@@ -1,13 +1,12 @@
-package ru.sumin.a2dolist.domain.usecase
+package ru.sumin.a2dolist.domain.usecase.auth
 
-import ru.sumin.a2dolist.domain.repository.LoginRepository
-import javax.inject.Inject
+import ru.sumin.a2dolist.domain.repository.AuthRepository
 
 /**
  * Юзкейс для проверки, залогинен ли пользователь в данный момент.
  */
-class CheckAuthStatusUseCase @Inject constructor(
-    private val repository: LoginRepository
+class CheckAuthStatusUseCase(
+    private val repository: AuthRepository
 ) {
 
     suspend operator fun invoke(): Boolean {

@@ -1,13 +1,12 @@
-package ru.sumin.a2dolist.domain.usecase
+package ru.sumin.a2dolist.domain.usecase.auth
 
-import ru.sumin.a2dolist.domain.repository.LoginRepository
-import javax.inject.Inject
+import ru.sumin.a2dolist.domain.repository.AuthRepository
 
 /**
  * Юзкейс для регистрации пользователя.
  */
-class RegisterUserUseCase @Inject constructor(
-    private val repository: LoginRepository,
+class RegisterUserUseCase(
+    private val repository: AuthRepository,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase
 ) {
@@ -31,6 +30,6 @@ class RegisterUserUseCase @Inject constructor(
         }
 
         // 4. Если все в порядке, регистрируем
-        return repository.register(email, password)
+        return repository.register(email, password, confirmPassword)
     }
 }

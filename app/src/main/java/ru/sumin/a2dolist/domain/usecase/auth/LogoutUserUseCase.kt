@@ -1,13 +1,12 @@
-package ru.sumin.a2dolist.domain.usecase
+package ru.sumin.a2dolist.domain.usecase.auth
 
-import ru.sumin.a2dolist.domain.repository.LoginRepository
-import javax.inject.Inject
+import ru.sumin.a2dolist.domain.repository.AuthRepository
 
 /**
  * Юзкейс для выхода пользователя из системы.
  */
-class LogoutUserUseCase @Inject constructor(
-    private val repository: LoginRepository
+class LogoutUserUseCase(
+    private val repository: AuthRepository
 ) {
 
     suspend operator fun invoke() {

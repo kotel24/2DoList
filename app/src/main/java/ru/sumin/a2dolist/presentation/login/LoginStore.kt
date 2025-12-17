@@ -6,9 +6,9 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
-import ru.sumin.a2dolist.domain.usecase.CheckAuthStatusUseCase
-import ru.sumin.a2dolist.domain.usecase.LoginUserUseCase
-import ru.sumin.a2dolist.domain.usecase.RegisterUserUseCase
+import ru.sumin.a2dolist.domain.usecase.auth.CheckAuthStatusUseCase
+import ru.sumin.a2dolist.domain.usecase.auth.LoginUserUseCase
+import ru.sumin.a2dolist.domain.usecase.auth.RegisterUserUseCase
 import ru.sumin.a2dolist.presentation.login.LoginStore.Intent
 import ru.sumin.a2dolist.presentation.login.LoginStore.Label
 import ru.sumin.a2dolist.presentation.login.LoginStore.State
